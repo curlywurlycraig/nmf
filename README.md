@@ -9,8 +9,3 @@ In the future, it may add support for update steps for "W" too.
 ```rust
 let result_activations = compute_activation_matrix(&templates, &initial_activation, &v);
 ```
-
-# TODO
-
-- [ ] Implement update step for "W"
-- [ ] Don't hardcode iterations. Instead, use a struct and iterator.
