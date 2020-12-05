@@ -12,7 +12,10 @@ extern crate rulinalg;
 pub struct FixedTemplateNmf<'a> {
     templates: Matrix<f32>,
 
-    /// Optimisation in Dessien et. al.
+    // Optimisation in Dessien et. al.
+    // This piece does not need to be re-computed for every iteration.
+    // If this library is to support update step for the templates ("W"),
+    // this part will need to be recomputed when the templates update.
     cached_template_part: Matrix<f32>,
 
     activation_coef: Matrix<f32>,

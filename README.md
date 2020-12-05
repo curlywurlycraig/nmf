@@ -7,5 +7,11 @@ In the future, it may add support for update steps for "W" too.
 # Usage
 
 ```rust
-let result_activations = compute_activation_matrix(&templates, &initial_activation, &v);
+let mut nmf = FixedTemplateNmf::new(templates, activation_coef, &input, 0.5);
+
+for _ in 1..5 {
+    nmf.update_activation_coef();
+}
+
+let activation = nmf.get_activation_coef();
 ```
