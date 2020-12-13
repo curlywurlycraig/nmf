@@ -2,7 +2,7 @@
 name = "nmf"
 license = "MIT OR Apache-2.0"
 description = "Non-negative matrix factorization."
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Craig Wilkinson <craig@crwi.uk>"]
 edition = "2018"
 repository = "https://github.com/curlywurlycraig/nmf"
