@@ -11,6 +11,7 @@ extern crate rulinalg;
 /// For example, extracting played notes on a guitar.
 pub struct FixedTemplateNmf<'a> {
     templates: Matrix<f32>,
+    templates_transposed: Matrix<f32>,
 
     // Optimisation in Dessien et. al.
     // This piece does not need to be re-computed for every iteration.
@@ -37,8 +38,11 @@ impl<'a> FixedTemplateNmf<'a> {
         let v_e_t = input * &e;
         let cached_template_part = templates.elemul(&v_e_t).transpose();
 
+        let templates_transposed = templates.transpose();
+
         FixedTemplateNmf {
             templates,
+            templates_transposed,
             cached_template_part,
             activation_coef,
             input,
@@ -49,9 +53,9 @@ impl<'a> FixedTemplateNmf<'a> {
     pub fn update_activation_coef(&mut self) {
         let input_height = self.input.rows();
 
-        let mut resulting_coef: Matrix<f32> = self.activation_coef.clone();
+        let mut resulting_coef: &Matrix<f32> = &self.activation_coef;
 
-        let w_h: Matrix<f32> = &self.templates * &resulting_coef;
+        let w_h: Matrix<f32> = &self.templates * resulting_coef;
         let w_h_beta_1: Vector<f32> = w_h
             .iter()
             .map(|x| x.powf(self.beta - 1f32))
@@ -65,12 +69,10 @@ impl<'a> FixedTemplateNmf<'a> {
         let w_h_beta_2: Matrix<f32> = Matrix::new(input_height, 1, w_h_beta_2);
 
         let numerator = &self.cached_template_part * &w_h_beta_2;
-        let denominator = self.templates.transpose() * &w_h_beta_1;
+        let denominator = &self.templates_transposed * &w_h_beta_1;
         let fraction = numerator.elediv(&denominator);
 
-        resulting_coef = resulting_coef.elemul(&fraction);
-
-        self.activation_coef = resulting_coef
+        self.activation_coef = resulting_coef.elemul(&fraction);
     }
 
     pub fn get_activation_coef(&'a self) -> &'a Matrix<f32> {
